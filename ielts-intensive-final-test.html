@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IELTS Listening Test</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; }
+            .section { margin-bottom: 30px; }
+            .audio-player { margin-top: 10px; }
+            h2 { margin-bottom: 10px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { border: 1px solid black; padding: 8px; text-align: left; }
+            .timer { font-size: 20px; font-weight: bold; color: red; }
+        </style>
+        <script>
+            let timeLeft = 40 * 60;
+            let timerInterval;
+            
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    let minutes = Math.floor(timeLeft / 60);
+                    let seconds = timeLeft % 60;
+                    document.getElementById("timer").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                    if (timeLeft === 0) {
+                        clearInterval(timerInterval);
+                        saveAnswers();
+                    }
+                    timeLeft--;
+                }, 1000);
+            }
+    
+            function saveAnswers() {
+                clearInterval(timerInterval);
+                let studentName = document.getElementById("studentName").value.trim();
+                let answers = {};
+                
+                for (let i = 1; i <= 40; i++) {
+                    let input = document.getElementById("q" + i);
+                    if (input) {
+                        answers[`q${i}`] = input.value.trim();
+                    } else {
+                        let radioInput = document.querySelector(`input[name='q${i}']:checked`);
+                        let selectInput = document.querySelector(`select[name='q${i}']`);
+                        if (radioInput) {
+                            answers[`q${i}`] = radioInput.value;
+                        } else if (selectInput) {
+                            answers[`q${i}`] = selectInput.value;
+                        }
+                    }
+                }
+                
+                let data = `Student Name: ${studentName}\n`;
+                for (let key in answers) {
+                    data += `${key}: ${answers[key]}\n`;
+                }
+                
+                let blob = new Blob([data], { type: "text/plain" });
+                let link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `IELTS_Answers_${studentName}.txt`;
+                link.click();
+            }
+        </script>
+    </head>
+    <body onload="startTimer()">
+    <h1>IELTS INTENSIVE FINAL: Listening Test</h1>
+    <label for="studentName">Enter your name:</label>
+    <input type="text" id="studentName" name="studentName" placeholder="Your Name">
+    <div class="timer">Time Left: <span id="timer">40:00</span></div>
+    
+    
+    
+    <div class="section">
+        <h2>PART 1: Complete the Notes Below</h2>
+      <div class="section">
+        <h2>Listening Audio</h2>
+        <p>Listen to the audio and answer the questions below.</p>
+        <audio controls class="audio-player">
+            <source src="ELT_IELTS17_t2_audio1.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+        <p>Write ONE WORD ONLY for each answer.</p>
+        <div class="content-box">
+            <h3>Opportunities for voluntary work in Southoe village</h3>
+            
+            <h4>Library</h4>
+            <ul>
+                <li>Help with 1 <input type="text" id="q1"> books (times to be arranged)</li>
+                <li>Help needed to keep 2 <input type="text" id="q2"> of books up to date</li>
+                <li>Library is in the 3 <input type="text" id="q3"> Room in the village hall</li>
+            </ul>
+            
+            <h4>Lunch club</h4>
+            <ul>
+                <li>Help by providing 4 <input type="text" id="q4"></li>
+                <li>Help with hobbies such as 5 <input type="text" id="q5"></li>
+            </ul>
+            
+            <h4>Help for individuals needed next week</h4>
+            <ul>
+                <li>Taking Mrs Carroll to 6 <input type="text" id="q6"></li>
+                <li>Work in the 7 <input type="text" id="q7"> at Mr Selsbury’s house</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Complete the Table Below</h2>
+        <p>Write ONE WORD ONLY for each answer.</p>
+        <table>
+            <tr>
+                <th>Date</th><th>Event</th><th>Location</th><th>Help Needed</th>
+            </tr>
+            <tr>
+                <td>19 Oct</td>
+                <td>8 <input type="text" id="q8"></td>
+                <td>Village hall</td>
+                <td>Providing refreshments</td>
+            </tr>
+            <tr>
+                <td>18 Nov</td>
+                <td>Dance</td>
+                <td>Village hall</td>
+                <td>Checking 9 <input type="text" id="q9"></td>
+            </tr>
+            <tr>
+                <td>31 Dec</td>
+                <td>New Year’s Eve party</td>
+                <td>Mountfort Hotel</td>
+                <td>Designing the 10 <input type="text" id="q10"></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="section">
+        <div class="section">
+        <h2>Listening Audio</h2>
+        <p>Listen to the audio and answer the questions below.</p>
+        <audio controls class="audio-player">
+            <source src="ELT_IELTS17_t2_audio2.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+        <h2>PART 2: Multiple Choice</h2>
+        <p>Choose the correct letter, A, B, or C.</p>
+        <p>11. Many past owners made changes to:</p>
+        <input type="radio" name="q11" value="A"> A. the gardens<br>
+        <input type="radio" name="q11" value="B"> B. the house<br>
+        <input type="radio" name="q11" value="C"> C. the farm<br>
+        
+        <p>12. Sir Edward Downes built Oniton Hall because he wanted:</p>
+        <input type="radio" name="q12" value="A"> A. a place for discussing politics<br>
+        <input type="radio" name="q12" value="B"> B. a place to display his wealth<br>
+        <input type="radio" name="q12" value="C"> C. a place for artists and writers<br>
+        
+        <p>13. Visitors can learn about the work of servants in the past from:</p>
+        <input type="radio" name="q13" value="A"> A. audio guides<br>
+        <input type="radio" name="q13" value="B"> B. photographs<br>
+        <input type="radio" name="q13" value="C"> C. people in costume<br>
+        
+        <p>14. What is new for children at Oniton Hall?</p>
+        <input type="radio" name="q14" value="A"> A. clothes for dressing up<br>
+        <input type="radio" name="q14" value="B"> B. mini tractors<br>
+        <input type="radio" name="q14" value="C"> C. the adventure playground<br>
+    </div>
+
+    <div class="section">
+        <h2>PART 2: Matching Activities to Locations</h2>
+        <p>Choose SIX answers from the box and write the correct letter, A–H, next to Questions 15–20.</p>
+        <div class="content-box">
+            <p><strong>Activities:</strong></p>
+            <ul>
+                <li>A. shopping</li>
+                <li>B. watching cows being milked</li>
+                <li>C. seeing old farming equipment</li>
+                <li>D. eating and drinking</li>
+                <li>E. starting a trip</li>
+                <li>F. seeing rare breeds of animals</li>
+                <li>G. helping to look after animals</li>
+                <li>H. using farming tools</li>
+            </ul>
+        </div>
+        <table>
+            <tr>
+                <th>Locations on the farm</th><th>Answer</th>
+            </tr>
+            <tr><td>15. dairy</td><td><select id="q15"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></td></tr>
+            <tr><td>16. large barn</td><td><select id="q16"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></td></tr>
+            <tr><td>17. small barn</td><td><select id="q17"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></td></tr>
+            <tr><td>18. stables</td><td><select id="q18"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></td></tr>
+            <tr><td>19. shed</td><td><select id="q19"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></td></tr>
+            <tr><td>20. parkland</td><td><select id="q20"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></td></tr>
+        </table>
+    </div>
+    <h1>IELTS Listening Test - Part 3</h1>
+    
+    <div class="section">
+        <h2>Listening Audio</h2>
+        <p>Listen to the audio and answer the questions below.</p>
+        <audio controls class="audio-player">
+            <source src="ELT_IELTS17_t2_audio3.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+    
+    <div class="section">
+        <h2>PART 3: Questions 21-30</h2>
+        
+        <h3>Questions 21 and 22</h3>
+        <p>Choose <strong>TWO</strong> letters, A–E.</p>
+        <p>Which <strong>TWO</strong> things do the students agree they need to include in their reviews of <em>Romeo and Juliet</em>?</p>
+        
+        <input type="checkbox" name="q21_22" value="A"> A. Analysis of the text<br>
+        <input type="checkbox" name="q21_22" value="B"> B. A summary of the plot<br>
+        <input type="checkbox" name="q21_22" value="C"> C. A description of the theatre<br>
+        <input type="checkbox" name="q21_22" value="D"> D. A personal reaction<br>
+        <input type="checkbox" name="q21_22" value="E"> E. A reference to particular scenes<br>
+        
+        <h3>Questions 23-27</h3>
+        <p>Which opinion do the speakers give about each of the following aspects of The Emporium’s production of <em>Romeo and Juliet</em>?</p>
+        <p>Choose <strong>FIVE</strong> answers from the box and write the correct letter, A–G, next to Questions 23–27.</p>
+        
+        <table>
+            <tr>
+                <th>Opinions</th>
+            </tr>
+            <tr><td>A. They both expected this to be more traditional.</td></tr>
+            <tr><td>B. They both thought this was original.</td></tr>
+            <tr><td>C. They agree this created the right atmosphere.</td></tr>
+            <tr><td>D. They agree this was a major strength.</td></tr>
+            <tr><td>E. They were both disappointed by this.</td></tr>
+            <tr><td>F. They disagree about why this was an issue.</td></tr>
+            <tr><td>G. They disagree about how this could be improved.</td></tr>
+        </table>
+        
+        <table>
+            <tr>
+                <th>Aspects of the production</th>
+                <th>Answer (A-G)</th>
+            </tr>
+            <tr>
+                <td>23. The set</td>
+                <td>
+                    <select name="q23">
+                        <option value="">Select</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>24. The lighting</td>
+                <td>
+                    <select name="q24">
+                        <option value="">Select</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>25. The costume design</td>
+                <td>
+                    <select name="q25">
+                        <option value="">Select</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>26. The music</td>
+                <td>
+                    <select name="q26">
+                        <option value="">Select</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>27. The actors’ delivery</td>
+                <td>
+                    <select name="q27">
+                        <option value="">Select</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <h3>Questions 28-30</h3>
+        <p>Choose the correct letter, A, B, or C.</p>
+        <p>28. The students think the story of <em>Romeo and Juliet</em> is still relevant for young people today because</p>
+        <input type="radio" name="q28" value="A"> A. it illustrates how easily conflict can start.<br>
+        <input type="radio" name="q28" value="B"> B. it deals with problems that families experience.<br>
+        <input type="radio" name="q28" value="C"> C. it teaches them about relationships.<br>
+        
+        <p>29. The students found watching <em>Romeo and Juliet</em> in another language</p>
+        <input type="radio" name="q29" value="A"> A. frustrating.<br>
+        <input type="radio" name="q29" value="B"> B. demanding.<br>
+        <input type="radio" name="q29" value="C"> C. moving.<br>
+        
+        <p>30. Why do the students think Shakespeare’s plays have such international appeal?</p>
+        <input type="radio" name="q30" value="A"> A. The stories are exciting.<br>
+        <input type="radio" name="q30" value="B"> B. There are recognisable characters.<br>
+        <input type="radio" name="q30" value="C"> C. They can be interpreted in many ways.<br>
+    </div>
+    <h1>IELTS Listening Test - Part 4</h1>
+    
+    <div class="section">
+        <h2>Listening Audio</h2>
+        <p>Listen to the audio and answer the questions below.</p>
+        <audio controls class="audio-player">
+            <source src="ELT_IELTS17_t2_audio4.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+    
+    <div class="section">
+        <h2>PART 4: Questions 31-40</h2>
+        <p>Complete the notes below. Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.</p>
+        <h3>The impact of digital technology on the Icelandic language</h3>
+        <p><strong>The Icelandic language</strong></p>
+        <ul>
+            <li>Has approximately 31 <input type="text" name="q31" size="5"> speakers</li>
+            <li>Has a 32 <input type="text" name="q32" size="15"> that is still growing</li>
+            <li>Has not changed a lot over the last thousand years</li>
+            <li>Has its own words for computer-based concepts, such as web browser and 33 <input type="text" name="q33" size="15"></li>
+        </ul>
+        
+        <p><strong>Young speakers</strong></p>
+        <ul>
+            <li>Are big users of digital technology, such as 34 <input type="text" name="q34" size="15"></li>
+            <li>Are becoming 35 <input type="text" name="q35" size="15"> very quickly</li>
+            <li>Are having discussions using only English while they are in the 36 <input type="text" name="q36" size="15"> at school</li>
+            <li>Are better able to identify the content of a 37 <input type="text" name="q37" size="15"> in English than Icelandic</li>
+        </ul>
+        
+        <p><strong>Technology and internet companies</strong></p>
+        <ul>
+            <li>Write very little in Icelandic because of the small number of speakers and because of how complicated its 38 <input type="text" name="q38" size="15"> is</li>
+        </ul>
+        
+        <p><strong>The Icelandic government</strong></p>
+        <ul>
+            <li>Has set up a fund to support the production of more digital content in the language</li>
+            <li>Believes that Icelandic has a secure future</li>
+            <li>Is worried that young Icelanders may lose their 39 <input type="text" name="q39" size="15"> as Icelanders</li>
+            <li>Is worried about the consequences of children not being 40 <input type="text" name="q40" size="15"> in either Icelandic or English</li>
+        </ul>
+    </div>
+    <button onclick="saveAnswers()">Submit</button>
+</body>
+</html>
