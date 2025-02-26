@@ -1,74 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>IELTS Listening Test</title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; }
-            .section { margin-bottom: 30px; }
-            .audio-player { margin-top: 10px; }
-            h2 { margin-bottom: 10px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-            th, td { border: 1px solid black; padding: 8px; text-align: left; }
-            .timer { font-size: 20px; font-weight: bold; color: red; }
-        </style>
-        <script>
-            let timeLeft = 40 * 60;
-            let timerInterval;
-            
-            function startTimer() {
-                timerInterval = setInterval(() => {
-                    let minutes = Math.floor(timeLeft / 60);
-                    let seconds = timeLeft % 60;
-                    document.getElementById("timer").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-                    if (timeLeft === 0) {
-                        clearInterval(timerInterval);
-                        saveAnswers();
-                    }
-                    timeLeft--;
-                }, 1000);
-            }
-    
-            function saveAnswers() {
-            clearInterval(timerInterval);
-            let studentName = document.getElementById("studentName").value.trim();
-            let answers = {};
-            
-            for (let i = 1; i <= 40; i++) {
-                let input = document.querySelector(`input[name='q${i}']`);
-                let radioInput = document.querySelector(`input[name='q${i}']:checked`);
-                let selectInput = document.querySelector(`select[name='q${i}']`);
-                
-                if (input && input.type === "text") {
-                    answers[`q${i}`] = input.value.trim();
-                } else if (radioInput) {
-                    answers[`q${i}`] = radioInput.value;
-                } else if (selectInput) {
-                    answers[`q${i}`] = selectInput.value;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Listening Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 20px; }
+        .section { margin-bottom: 30px; }
+        .audio-player { margin-top: 10px; }
+        h2 { margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        .timer { font-size: 20px; font-weight: bold; color: red; }
+        .result { font-size: 18px; font-weight: bold; margin-top: 20px; }
+    </style>
+    <script>
+        let timeLeft = 40 * 60;
+        let timerInterval;
+        
+        const correctAnswers = {
+            q1: "collecting", q2: "records", q3: "West", q4: "transport", q5: "art", q6: "hospital", q7: "garden",
+            q8: "quiz", q9: "tickets", q10: "poster", q11: "B", q12: "C", q13: "C", q14: "B",
+            q15: "D", q16: "C", q17: "G", q18: "A", q19: "E", q20: "F",
+            q21: "D,E", q22: "D,E", q23: "D", q24: "C", q25: "A", q26: "E", q27: "F",
+            q28: "B", q29: "C", q30: "C", q31: "321000", q32: "vocabulary", q33: "podcast", q34: "smartphones",
+            q35: "bilingual", q36: "playground", q37: "picture", q38: "grammar", q39: "identity", q40: "fluent"
+        };
+        
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById("timer").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                if (timeLeft === 0) {
+                    clearInterval(timerInterval);
+                    gradeTest();
                 }
-            }
-            
-            let data = `Student Name: ${studentName}\n`;
-            for (let key in answers) {
-                data += `${key}: ${answers[key]}\n`;
-            }
-            
-            let blob = new Blob([data], { type: "text/plain" });
-            let link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `IELTS_Answers_${studentName}.txt`;
-            link.click();
+                timeLeft--;
+            }, 1000);
         }
+
+        function gradeTest() {
+    clearInterval(timerInterval);
+    let studentName = document.getElementById("studentName").value.trim();
+    let score = 0;
+    let answers = {};
+    
+    // Xử lý các câu hỏi từ 1 đến 40 (trừ checkbox)
+    for (let i = 1; i <= 40; i++) {
+        // Bỏ qua câu 21 và 22 vì sẽ xử lý riêng
+        if(i === 21 || i === 22) continue;
+        
+        let input = document.querySelector(`input[name='q${i}']`);
+        let radioInput = document.querySelector(`input[name='q${i}']:checked`);
+        let selectInput = document.querySelector(`select[name='q${i}']`);
+        
+        if (input && input.type === "text") {
+            answers[`q${i}`] = input.value.trim().toLowerCase();
+        } else if (radioInput) {
+            answers[`q${i}`] = radioInput.value;
+        } else if (selectInput) {
+            answers[`q${i}`] = selectInput.value;
+        }
+    }
+    
+    // Xử lý checkbox cho câu 21 và 22
+    let checkboxInputs = document.querySelectorAll(`input[name='q21_22']:checked`);
+    if (checkboxInputs.length > 0) {
+        let selected = Array.from(checkboxInputs).map(cb => cb.value.toUpperCase());
+        const correctCheckboxAnswers = ["D", "E"];
+        // Nếu cần, bạn cũng có thể lưu câu trả lời vào answers nếu muốn:
+        answers["q21_22"] = selected.join(",");
+        correctCheckboxAnswers.forEach(ans => {
+            if (selected.includes(ans)) {
+                score++;
+            }
+        });
+    }
+    
+    // So sánh các câu trả lời còn lại
+    for (let key in correctAnswers) {
+        // Loại bỏ xử lý checkbox đã xử lý ở trên (q21 và q22)
+        if (key === "q21" || key === "q22") continue;
+        if (answers[key] && answers[key].toLowerCase() === correctAnswers[key].toLowerCase()) {
+            score++;
+        }
+    }
+    
+    let data = {
+        studentName: studentName,
+        score: score,
+        answers: Object.values(answers)
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbwM9TGRQd3DUH7Om5PN9BnjUFnwfRrIwHe9BxLk0gfXDF0Q3qJUPgkYMZpxqj02ds49vg/exec", { // Thay URL mới vào đây
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+})
+.then(response => response.json()) // ✅ Đọc JSON thay vì text
+.then(result => {
+    console.log("Server response:", result);
+    if (result.status === "Success") {
+        alert("Your result has been saved successfully!");
+        resetTest();
+    } else {
+        alert("Failed to save the result. Server response: " + result.message);
+    }
+})
+.catch(error => {
+    console.error("Fetch error:", error);
+    alert("Network error! Please check your internet connection.");
+});
+    document.getElementById("result").textContent = `Your Score: ${score}/40`;
+}
+function resetTest() {
+    // Xóa nội dung các ô input
+    document.querySelectorAll("input[type='text']").forEach(input => input.value = "");
+    document.querySelectorAll("input[type='radio']").forEach(input => input.checked = false);
+    document.querySelectorAll("input[type='checkbox']").forEach(input => input.checked = false);
+    document.querySelectorAll("select").forEach(select => select.value = "");
+
+    // Reset tên thí sinh
+    document.getElementById("studentName").value = "";
+
+    // Xóa kết quả hiển thị
+    document.getElementById("result").textContent = "";
+
+    // Reset bộ đếm thời gian
+    clearInterval(timerInterval);
+    timeLeft = 40 * 60; // 40 phút
+    startTimer(); // Bắt đầu lại bộ đếm thời gian
+}
     </script>
-    </head>
-    <body onload="startTimer()">
-    <h1>IELTS INTENSIVE FINAL: Listening Test</h1>
+</head>
+<body onload="startTimer()">
+    <h1>IELTS Listening Test</h1>
     <label for="studentName">Enter your name:</label>
     <input type="text" id="studentName" name="studentName" placeholder="Your Name">
     <div class="timer">Time Left: <span id="timer">40:00</span></div>
-    
-    
     
     <div class="section">
         <h2>PART 1: Complete the Notes Below</h2>
@@ -85,21 +155,21 @@
             
             <h4>Library</h4>
             <ul>
-                <li>Help with 1 <input type="text" id="q1"> books (times to be arranged)</li>
-                <li>Help needed to keep 2 <input type="text" id="q2"> of books up to date</li>
-                <li>Library is in the 3 <input type="text" id="q3"> Room in the village hall</li>
+                <li>Help with 1 <input type="text" id="q1" name="q1"> books (times to be arranged)</li>
+                <li>Help needed to keep 2 <input type="text" id="q2" name="q2"> of books up to date</li>
+                <li>Library is in the 3 <input type="text" id="q3" name="q3"> Room in the village hall</li>
             </ul>
             
             <h4>Lunch club</h4>
             <ul>
-                <li>Help by providing 4 <input type="text" id="q4"></li>
-                <li>Help with hobbies such as 5 <input type="text" id="q5"></li>
+                <li>Help by providing 4 <input type="text" id="q4" name="q4"></li>
+                <li>Help with hobbies such as 5 <input type="text" id="q5" name="q5"></li>
             </ul>
             
             <h4>Help for individuals needed next week</h4>
             <ul>
-                <li>Taking Mrs Carroll to 6 <input type="text" id="q6"></li>
-                <li>Work in the 7 <input type="text" id="q7"> at Mr Selsbury’s house</li>
+                <li>Taking Mrs Carroll to 6 <input type="text" id="q6" name="q6"></li>
+                <li>Work in the 7 <input type="text" id="q7" name="q7"> at Mr Selsbury’s house</li>
             </ul>
         </div>
     </div>
@@ -113,7 +183,7 @@
             </tr>
             <tr>
                 <td>19 Oct</td>
-                <td>8 <input type="text" id="q8"></td>
+                <td>8 <input type="text" id="q8" name="q8"></td>
                 <td>Village hall</td>
                 <td>Providing refreshments</td>
             </tr>
@@ -121,13 +191,13 @@
                 <td>18 Nov</td>
                 <td>Dance</td>
                 <td>Village hall</td>
-                <td>Checking 9 <input type="text" id="q9"></td>
+                <td>Checking 9 <input type="text" id="q9" name="q9"></td>
             </tr>
             <tr>
                 <td>31 Dec</td>
                 <td>New Year’s Eve party</td>
                 <td>Mountfort Hotel</td>
-                <td>Designing the 10 <input type="text" id="q10"></td>
+                <td>Designing the 10 <input type="text" id="q10" name="q10"></td>
             </tr>
         </table>
     </div>
@@ -188,7 +258,7 @@
             <tr>
                 <td>15. dairy</td>
                 <td>
-                    <select name="q23">
+                    <select name="q15">
                         <option value="">Select</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -204,7 +274,7 @@
             <tr>
                 <td>16. large barn</td>
                 <td>
-                    <select name="q23">
+                    <select name="q16">
                         <option value="">Select</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -220,7 +290,7 @@
             <tr>
                 <td>17. small barn</td>
                 <td>
-                    <select name="q23">
+                    <select name="q17">
                         <option value="">Select</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -236,7 +306,7 @@
             <tr>
                 <td>18. stables</td>
                 <td>
-                    <select name="q23">
+                    <select name="q18">
                         <option value="">Select</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -252,7 +322,7 @@
             <tr>
                 <td>19. shed</td>
                 <td>
-                    <select name="q23">
+                    <select name="q19">
                         <option value="">Select</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -268,7 +338,7 @@
             <tr>
                 <td>20. parkland</td>
                 <td>
-                    <select name="q23">
+                    <select name="q20">
                         <option value="">Select</option>
                         <option value="A">A</option>
                         <option value="B">B</option>
@@ -465,6 +535,7 @@
             <li>Is worried about the consequences of children not being 40 <input type="text" name="q40" size="15"> in either Icelandic or English</li>
         </ul>
     </div>
-    <button onclick="saveAnswers()">Submit</button>
+    <button onclick="gradeTest()">Submit</button>
+    <div id="result" class="result"></div>
 </body>
 </html>
