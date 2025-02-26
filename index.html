@@ -95,26 +95,16 @@
     const origin = window.location.origin;
 const url = `https://script.google.com/macros/s/AKfycbzyj9bp7nX9GxZ5wGiITdb5zL7Q-zaXSMJMn8zOpy8xul8w0dIx5PUGJjnC6Rlx9GBGEA/exec?origin=${origin}`;
 
-fetch(url, { 
-    method: "POST",
-    mode: "cors", // ✅ Bật CORS
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-})
-.then(response => response.json()) 
-.then(result => {
-    console.log("Server response:", result);
-    if (result.status === "Success") {
-        alert("Your result has been saved successfully!");
-        resetTest();
-    } else {
-        alert("Failed to save the result. Server response: " + result.message);
-    }
-})
-.catch(error => {
-    console.error("Fetch error:", error);
-    alert("Network error! Please check your internet connection.");
-});
+fetch('https://script.google.com/macros/s/AKfycbzyj9bp7nX9GxZ5wGiITdb5zL7Q-zaXSMJM…zOpy8xul8w0dIx5PUGJjnC6Rlx9GBGEA/exec', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ name: 'John Doe' })
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
     document.getElementById("result").textContent = `Your Score: ${score}/40`;
 }
 function resetTest() {
