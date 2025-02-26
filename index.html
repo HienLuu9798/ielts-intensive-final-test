@@ -92,13 +92,16 @@
         score: score,
         answers: Object.values(answers)
     };
+    const origin = window.location.origin;
+const url = `https://script.google.com/macros/s/AKfycbycURcP_Gb_K_aLNRN6GoVLvNrI3y9oN-6hbtDHkU09hPR2SpjIy0kpuhuuM3bTKvGjlw/exec?origin=${origin}`;
 
-    fetch("https://script.google.com/macros/s/AKfycbw8C7UCX-9MNyCiEtbcLwri9NgPIVXZFjbqchJHuZGyFgdLcjPLMbQ-n27_V6_RFyd11Q/exec", { // Thay URL mới vào đây
+fetch(url, { 
     method: "POST",
+    mode: "cors", // ✅ Bật CORS
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
 })
-.then(response => response.json()) // ✅ Đọc JSON thay vì text
+.then(response => response.json()) 
 .then(result => {
     console.log("Server response:", result);
     if (result.status === "Success") {
