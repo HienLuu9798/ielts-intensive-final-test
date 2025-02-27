@@ -41,69 +41,59 @@
         }
 
         function gradeTest() {
-    clearInterval(timerInterval);
-    let studentName = document.getElementById("studentName").value.trim();
-    let score = 0;
-    let answers = {};
-    
-    // Xử lý các câu hỏi từ 1 đến 40 (trừ checkbox)
-    for (let i = 1; i <= 40; i++) {
-        // Bỏ qua câu 21 và 22 vì sẽ xử lý riêng
-        if(i === 21 || i === 22) continue;
+        clearInterval(timerInterval);
+        let studentName = document.getElementById("studentName").value.trim();
+        let score = 0;
+        let answers = {};
         
-        let input = document.querySelector(`input[name='q${i}']`);
-        let radioInput = document.querySelector(`input[name='q${i}']:checked`);
-        let selectInput = document.querySelector(`select[name='q${i}']`);
-        
-        if (input && input.type === "text") {
-            answers[`q${i}`] = input.value.trim().toLowerCase();
-        } else if (radioInput) {
-            answers[`q${i}`] = radioInput.value;
-        } else if (selectInput) {
-            answers[`q${i}`] = selectInput.value;
+        for (let i = 1; i <= 40; i++) {
+            if (i === 21 || i === 22) continue;
+            
+            let input = document.querySelector(`input[name='q${i}']`);
+            let radioInput = document.querySelector(`input[name='q${i}']:checked`);
+            let selectInput = document.querySelector(`select[name='q${i}']`);
+            
+            if (input && input.type === "text") {
+                answers[`q${i}`] = input.value.trim().toLowerCase();
+            } else if (radioInput) {
+                answers[`q${i}`] = radioInput.value;
+            } else if (selectInput) {
+                answers[`q${i}`] = selectInput.value;
+            }
         }
-    }
-    
-    // Xử lý checkbox cho câu 21 và 22
-    let checkboxInputs = document.querySelectorAll(`input[name='q21_22']:checked`);
-    if (checkboxInputs.length > 0) {
-        let selected = Array.from(checkboxInputs).map(cb => cb.value.toUpperCase());
-        const correctCheckboxAnswers = ["D", "E"];
-        // Nếu cần, bạn cũng có thể lưu câu trả lời vào answers nếu muốn:
-        answers["q21_22"] = selected.join(",");
-        correctCheckboxAnswers.forEach(ans => {
-            if (selected.includes(ans)) {
+        
+        let checkboxInputs = document.querySelectorAll(`input[name='q21_22']:checked`);
+        if (checkboxInputs.length > 0) {
+            let selected = Array.from(checkboxInputs).map(cb => cb.value.toUpperCase());
+            answers["q21_22"] = selected.join(",");
+        }
+        
+        for (let key in correctAnswers) {
+            if (key === "q21" || key === "q22") continue;
+            if (answers[key] && answers[key].toLowerCase() === correctAnswers[key].toLowerCase()) {
                 score++;
             }
-        });
-    }
-    
-    // So sánh các câu trả lời còn lại
-    for (let key in correctAnswers) {
-        // Loại bỏ xử lý checkbox đã xử lý ở trên (q21 và q22)
-        if (key === "q21" || key === "q22") continue;
-        if (answers[key] && answers[key].toLowerCase() === correctAnswers[key].toLowerCase()) {
-            score++;
         }
+        
+        let data = {
+            studentName: studentName,
+            score: score,
+            answers: answers
+        };
+        
+        fetch('https://intensive-final-default-rtdb.firebaseio.com/responses.json', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => console.log("Data saved successfully:", data))
+        .catch(error => console.error("Error saving data:", error));
+        
+        document.getElementById("result").textContent = `Your Score: ${score}/40`;
     }
-    
-    let data = {
-        studentName: studentName,
-        score: score,
-        answers: Object.values(answers)
-    };
-fetch('https://script.google.com/macros/s/AKfycbzIlG6GEoF053RdM2XvXkWCwIeTILZqFPMYBq4GCfJPQ-dd7IpMfT9nZ7czSB_WaA5-oQ/exec', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ name: 'John Doe' })
-    })
-      .then(response => response.json())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
-    document.getElementById("result").textContent = `Your Score: ${score}/40`;
-}
 function resetTest() {
     // Xóa nội dung các ô input
     document.querySelectorAll("input[type='text']").forEach(input => input.value = "");
